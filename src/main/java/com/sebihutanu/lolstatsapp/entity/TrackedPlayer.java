@@ -60,6 +60,9 @@ public class TrackedPlayer {
     @OneToMany(mappedBy = "trackedPlayer", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<WatchlistEntry> watchlistEntries = new HashSet<>();
 
+    @OneToMany(mappedBy = "trackedPlayer", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<MatchSnapshot> matchSnapshots = new HashSet<>();
+
     @PrePersist
     protected void onCreate() {
         createdAt = LocalDateTime.now();
