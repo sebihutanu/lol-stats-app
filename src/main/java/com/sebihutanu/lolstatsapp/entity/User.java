@@ -3,6 +3,8 @@ package com.sebihutanu.lolstatsapp.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
 @Entity
@@ -36,6 +38,9 @@ public class User {
 
     @Column(name = "updated_at", nullable = false)
     private LocalDateTime updatedAt;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<WatchlistEntry> watchlistEntries = new HashSet<>();
 
     @PrePersist
     protected void onCreate() {
