@@ -1,0 +1,26 @@
+package com.sebihutanu.lolstatsapp.dto;
+
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import lombok.Data;
+
+@Data
+public class FeedbackRequest {
+
+    @NotBlank(message = "Category is required")
+    private String category;
+
+    @NotNull(message = "Rating is required")
+    @Min(value = 1, message = "Rating must be at least 1")
+    @Max(value = 5, message = "Rating must be at most 5")
+    private Integer rating;
+
+    @NotNull(message = "Allow contact field is required")
+    private Boolean allowContact;
+
+    @NotBlank(message = "Message is required")
+    private String message;
+}
+
