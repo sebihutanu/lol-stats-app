@@ -5,6 +5,7 @@ import com.sebihutanu.lolstatsapp.dto.LoginRequest;
 import com.sebihutanu.lolstatsapp.dto.RegisterRequest;
 import com.sebihutanu.lolstatsapp.entity.User;
 import com.sebihutanu.lolstatsapp.entity.UserRole;
+import com.sebihutanu.lolstatsapp.exception.BadRequestException;
 import com.sebihutanu.lolstatsapp.repository.UserRepository;
 import com.sebihutanu.lolstatsapp.security.JwtService;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -25,7 +26,7 @@ public class AuthService {
 
     public AuthResponse register(RegisterRequest request) {
         if (userRepository.existsByEmail(request.getEmail())) {
-            throw new RuntimeException("Email already in use");
+            throw new BadRequestException("Email already in use");
         }
 
         User user = User.builder()
@@ -49,10 +50,10 @@ public class AuthService {
 
     public AuthResponse login(LoginRequest request) {
         User user = userRepository.findByEmail(request.getEmail())
-                .orElseThrow(() -> new RuntimeException("Invalid email or password"));
+                .orElseThrow(() -> new BadRequestException("Invalid email or password"));
 
         if (!passwordEncoder.matches(request.getPassword(), user.getPasswordHash())) {
-            throw new RuntimeException("Invalid email or password");
+            throw new BadRequestException("Invalid email or password");
         }
 
         String token = jwtService.generateToken(user.getId(), user.getEmail(), user.getRole().name());
