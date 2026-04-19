@@ -28,6 +28,15 @@ public class TrackedPlayerController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
+    @PostMapping("/search")
+    public ResponseEntity<TrackedPlayerResponse> searchRiot(
+            @RequestParam String gameName,
+            @RequestParam String tagLine,
+            @RequestParam String region) {
+        TrackedPlayerResponse response = trackedPlayerService.searchAndSync(gameName, tagLine, region);
+        return ResponseEntity.ok(response);
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<TrackedPlayerResponse> getById(@PathVariable UUID id) {
         TrackedPlayerResponse response = trackedPlayerService.getById(id);
