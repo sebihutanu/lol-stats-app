@@ -23,13 +23,16 @@ public class WatchlistService {
     private final WatchlistEntryRepository watchlistEntryRepository;
     private final UserRepository userRepository;
     private final TrackedPlayerRepository trackedPlayerRepository;
+    private final EmailService emailService;
 
     public WatchlistService(WatchlistEntryRepository watchlistEntryRepository,
                             UserRepository userRepository,
-                            TrackedPlayerRepository trackedPlayerRepository) {
+                            TrackedPlayerRepository trackedPlayerRepository,
+                            EmailService emailService) {
         this.watchlistEntryRepository = watchlistEntryRepository;
         this.userRepository = userRepository;
         this.trackedPlayerRepository = trackedPlayerRepository;
+        this.emailService = emailService;
     }
 
     public WatchlistEntryResponse addToWatchlist(UUID userId, WatchlistEntryRequest request) {
@@ -50,6 +53,17 @@ public class WatchlistService {
                 .build();
 
         entry = watchlistEntryRepository.save(entry);
+
+        // Send email notification
+        emailService.sendWatchlistAddedEmail(
+                user.getEmail(),
+                user.getName(),
+                player.getGameName(),
+                player.getTagLine(),
+                player.getRegion(),
+                request.getCustomNote()
+        );
+
         return mapToResponse(entry);
     }
 

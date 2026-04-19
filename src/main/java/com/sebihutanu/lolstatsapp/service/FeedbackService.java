@@ -18,10 +18,12 @@ public class FeedbackService {
 
     private final FeedbackRepository feedbackRepository;
     private final UserRepository userRepository;
+    private final EmailService emailService;
 
-    public FeedbackService(FeedbackRepository feedbackRepository, UserRepository userRepository) {
+    public FeedbackService(FeedbackRepository feedbackRepository, UserRepository userRepository, EmailService emailService) {
         this.feedbackRepository = feedbackRepository;
         this.userRepository = userRepository;
+        this.emailService = emailService;
     }
 
     public FeedbackResponse create(UUID userId, FeedbackRequest request) {
@@ -37,6 +39,16 @@ public class FeedbackService {
                 .build();
 
         feedback = feedbackRepository.save(feedback);
+
+        // Send confirmation email
+        emailService.sendFeedbackConfirmationEmail(
+                user.getEmail(),
+                user.getName(),
+                feedback.getCategory(),
+                feedback.getRating(),
+                feedback.getMessage()
+        );
+
         return mapToResponse(feedback);
     }
 
