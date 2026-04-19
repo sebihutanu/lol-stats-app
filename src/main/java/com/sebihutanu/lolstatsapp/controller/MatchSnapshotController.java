@@ -8,6 +8,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
@@ -22,6 +23,7 @@ public class MatchSnapshotController {
         this.matchSnapshotService = matchSnapshotService;
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public ResponseEntity<MatchSnapshotResponse> create(
             @PathVariable UUID playerId,
@@ -39,6 +41,7 @@ public class MatchSnapshotController {
         return ResponseEntity.ok(page);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{matchId}")
     public ResponseEntity<Void> delete(@PathVariable UUID playerId, @PathVariable UUID matchId) {
         matchSnapshotService.delete(matchId);
