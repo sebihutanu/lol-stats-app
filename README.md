@@ -11,6 +11,7 @@ A League of Legends player tracking and statistics web application built with **
 - **Match Snapshots** - View recent match details (champion, KDA, win/loss, queue type)
 - **Feedback System** - Users can submit feedback with category, rating, and message
 - **Email Notifications** - Automatic email via Mailtrap when adding a player to watchlist or submitting feedback
+- **Admin Panel** - ADMIN-only page to view/delete all feedback and browse all registered users
 
 ## Tech Stack
 
@@ -22,12 +23,16 @@ A League of Legends player tracking and statistics web application built with **
 | API Docs   | SpringDoc OpenAPI 3.0.2 (Swagger UI)             |
 | External   | Riot Games API                                   |
 | Build      | Maven                                            |
+| Frontend   | React 18, TypeScript, Material UI v6             |
+| Forms      | react-hook-form + yup                            |
+| Routing    | React Router v6                                  |
 
 ## Prerequisites
 
 - **Java 21**
 - **PostgreSQL 17**
 - **Maven**
+- **Node.js 18+**
 - **Riot API Key** - [developer.riotgames.com](https://developer.riotgames.com)
 - **Mailtrap Account**  - [mailtrap.io](https://mailtrap.io)
 
@@ -74,6 +79,16 @@ riot.api.key=RGAPI-your-riot-api-key
 The app will start on **http://localhost:8080**.
 
 Flyway will automatically run all database migrations on startup.
+
+### 5. Run the frontend
+
+```bash
+cd frontend
+npm install
+npm start   # runs on http://localhost:3000
+```
+
+> The backend must be running before starting the frontend.
 
 ## API Endpoints
 
@@ -134,6 +149,50 @@ Once the app is running, visit:
 - **Swagger UI**: [http://localhost:8080/swagger-ui.html](http://localhost:8080/swagger-ui.html)
 
 Click the **Authorize** button in Swagger UI and paste your JWT token (from the login response) to test authenticated endpoints.
+
+## Frontend
+
+### Pages
+
+| Page           | Route           | Description                                                                         | Access     |
+|----------------|-----------------|-------------------------------------------------------------------------------------|------------|
+| Login          | `/login`        | Email + password login, JWT stored in localStorage                                  | Public     |
+| Register       | `/register`     | Name, email, password + confirm password                                            | Public     |
+| Home           | `/home`         | Dashboard with live stats                                                           | USER       |
+| Players        | `/players`      | Paginated table, search, add player via Riot API                                    | USER       |
+| Player Details | `/players/:id`  | Profile icon, rank, champion stats, match history table                             | USER       |
+| Watchlist      | `/watchlist`    | Add / edit note / delete; player details page                                       | USER       |
+| Match History  | `/matches`      | Player selector, search by champion, filter by WIN / LOSS                           | USER       |
+| Feedback       | `/feedback`     | Category (select), rating (radio 1–5), allow contact (checkbox), message (textarea) | USER       |
+| Admin Panel    | `/admin`        | All feedback with delete confirmation; all users list                               | ADMIN only |
+
+### Authentication Flow
+
+- JWT token is stored in `localStorage` after login / register
+- All API calls automatically include `Authorization: Bearer <token>`
+- Protected routes redirect to `/login` if not authenticated
+- Admin routes redirect to `/home` if role is not `ADMIN`
+
+### Creating an Admin User
+
+Register a normal account through the app, then run the following SQL and log in again:
+
+```sql
+UPDATE users SET role = 'ADMIN' WHERE email = 'your@email.com';
+```
+
+> A new login is required because the role is embedded in the JWT token.
+
+### Frontend Project Structure
+
+```
+frontend/src/
+├── api/
+├── components/     # Layout (AppLayout + navbar), ProtectedRoute, AdminRoute, ConfirmDeleteDialog
+├── hooks/          # useAuth (localStorage helpers), usePageTitle
+├── pages/          # one folder per page (Admin, Feedback, Home, Login, Matches, Players, Register, Watchlist)
+└── types/          # shared TypeScript interfaces
+```
 
 ## Project Structure
 
