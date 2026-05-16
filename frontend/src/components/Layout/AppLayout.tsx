@@ -28,6 +28,9 @@ export const AppLayout = () => {
           <Button color="inherit" component={Link} to="/watchlist">
             Watchlist
           </Button>
+          <Button color="inherit" component={Link} to="/matches">
+            Matches
+          </Button>
           <Button color="inherit" component={Link} to="/feedback">
             Feedback
           </Button>

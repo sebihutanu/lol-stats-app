@@ -17,6 +17,15 @@ public interface MatchSnapshotRepository extends JpaRepository<MatchSnapshot, UU
     @Query("SELECT m FROM MatchSnapshot m WHERE m.trackedPlayer.id = :playerId AND LOWER(m.championName) LIKE LOWER(CONCAT('%', :search, '%')) ORDER BY m.playedAt DESC")
     Page<MatchSnapshot> searchByChampion(@Param("playerId") UUID playerId, @Param("search") String search, Pageable pageable);
 
+    @Query("SELECT m FROM MatchSnapshot m WHERE m.trackedPlayer.id = :playerId " +
+            "AND (:search IS NULL OR LOWER(m.championName) LIKE LOWER(CONCAT('%', :search, '%'))) " +
+            "AND (:win IS NULL OR m.win = :win) " +
+            "ORDER BY m.playedAt DESC")
+    Page<MatchSnapshot> findWithFilters(@Param("playerId") UUID playerId,
+                                        @Param("search") String search,
+                                        @Param("win") Boolean win,
+                                        Pageable pageable);
+
     boolean existsByTrackedPlayerIdAndRiotMatchId(UUID trackedPlayerId, String riotMatchId);
 }
 

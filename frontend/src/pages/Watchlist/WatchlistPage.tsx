@@ -23,6 +23,7 @@ import {
 } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { api } from '../../api/api';
 import { ConfirmDeleteDialog } from '../../components/ConfirmDeleteDialog';
 import { AddToWatchlistDialog } from './AddToWatchlistDialog';
@@ -54,6 +55,7 @@ interface PageResponse {
 }
 
 export const WatchlistPage = () => {
+  const navigate = useNavigate();
   const [data, setData] = useState<PageResponse | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -174,8 +176,13 @@ export const WatchlistPage = () => {
                 )}
                 {data?.content.map((entry) => (
                   <TableRow key={entry.id} hover>
-                    <TableCell>
-                      <strong>{entry.trackedPlayer.gameName}</strong>
+                    <TableCell
+                      sx={{ cursor: 'pointer' }}
+                      onClick={() => navigate(`/players/${entry.trackedPlayer.id}`)}
+                    >
+                      <Typography variant="body2" color="primary" sx={{ fontWeight: 'bold', '&:hover': { textDecoration: 'underline' } }}>
+                        {entry.trackedPlayer.gameName}
+                      </Typography>
                       <Typography variant="caption" color="text.secondary">
                         #{entry.trackedPlayer.tagLine}
                       </Typography>

@@ -36,8 +36,9 @@ public class MatchSnapshotController {
     public ResponseEntity<Page<MatchSnapshotResponse>> getMatches(
             @PathVariable UUID playerId,
             @RequestParam(required = false) String search,
+            @RequestParam(required = false) String result,
             Pageable pageable) {
-        Page<MatchSnapshotResponse> page = matchSnapshotService.getMatchesByPlayer(playerId, search, pageable);
+        Page<MatchSnapshotResponse> page = matchSnapshotService.getMatchesByPlayer(playerId, search, result, pageable);
         return ResponseEntity.ok(page);
     }
 

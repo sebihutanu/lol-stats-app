@@ -45,15 +45,25 @@ public class MatchSnapshotService {
         return mapToResponse(snapshot);
     }
 
-    public Page<MatchSnapshotResponse> getMatchesByPlayer(UUID playerId, String search, Pageable pageable) {
+    public Page<MatchSnapshotResponse> getMatchesByPlayer(UUID playerId, String search, String result, Pageable pageable) {
         if (!trackedPlayerRepository.existsById(playerId)) {
             throw new ResourceNotFoundException("Tracked player not found");
         }
 
-        if (search != null && !search.isBlank()) {
-            return matchSnapshotRepository.searchByChampion(playerId, search, pageable).map(this::mapToResponse);
+        boolean hasSearch = search != null && !search.isBlank();
+        Boolean win = null;
+        if ("WIN".equalsIgnoreCase(result)) win = true;
+        else if ("LOSS".equalsIgnoreCase(result)) win = false;
+
+        // Use the combined filter only when at least one filter is active
+        if (hasSearch || win != null) {
+            return matchSnapshotRepository.findWithFilters(playerId, hasSearch ? search : null, win, pageable)
+                    .map(this::mapToResponse);
         }
-        return matchSnapshotRepository.findByTrackedPlayerIdOrderByPlayedAtDesc(playerId, pageable).map(this::mapToResponse);
+
+        // No filters — use the simple, proven query
+        return matchSnapshotRepository.findByTrackedPlayerIdOrderByPlayedAtDesc(playerId, pageable)
+                .map(this::mapToResponse);
     }
 
     public void delete(UUID matchId) {
