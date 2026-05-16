@@ -67,7 +67,10 @@ public class WatchlistService {
         return mapToResponse(entry);
     }
 
-    public Page<WatchlistEntryResponse> getMyWatchlist(UUID userId, Pageable pageable) {
+    public Page<WatchlistEntryResponse> getMyWatchlist(UUID userId, String search, Pageable pageable) {
+        if (search != null && !search.isBlank()) {
+            return watchlistEntryRepository.searchByPlayerName(userId, search, pageable).map(this::mapToResponse);
+        }
         return watchlistEntryRepository.findByUserId(userId, pageable).map(this::mapToResponse);
     }
 

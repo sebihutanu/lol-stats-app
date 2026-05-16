@@ -36,9 +36,10 @@ public class WatchlistController {
     @GetMapping
     public ResponseEntity<Page<WatchlistEntryResponse>> getMyWatchlist(
             Authentication authentication,
+            @RequestParam(required = false) String search,
             Pageable pageable) {
         UUID userId = (UUID) authentication.getPrincipal();
-        Page<WatchlistEntryResponse> page = watchlistService.getMyWatchlist(userId, pageable);
+        Page<WatchlistEntryResponse> page = watchlistService.getMyWatchlist(userId, search, pageable);
         return ResponseEntity.ok(page);
     }
 
