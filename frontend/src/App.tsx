@@ -8,6 +8,7 @@ import { FeedbackPage } from './pages/Feedback/FeedbackPage';
 import { HomePage } from './pages/Home/HomePage';
 import { LoginPage } from './pages/Login/LoginPage';
 import { MatchesPage } from './pages/Matches/MatchesPage';
+import { PlayerDetailsPage } from './pages/Players/PlayerDetailsPage';
 import { PlayersPage } from './pages/Players/PlayersPage';
 import { RegisterPage } from './pages/Register/RegisterPage';
 import { WatchlistPage } from './pages/Watchlist/WatchlistPage';
@@ -25,6 +26,7 @@ function App() {
         <Route element={<AppLayout />}>
           <Route path="/home" element={<HomePage />} />
           <Route path="/players" element={<PlayersPage />} />
+          <Route path="/players/:id" element={<PlayerDetailsPage />} />
           <Route path="/watchlist" element={<WatchlistPage />} />
           <Route path="/matches" element={<MatchesPage />} />
           <Route path="/feedback" element={<FeedbackPage />} />
