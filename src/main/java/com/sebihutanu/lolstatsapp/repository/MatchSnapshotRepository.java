@@ -12,20 +12,26 @@ import java.util.UUID;
 
 @Repository
 public interface MatchSnapshotRepository extends JpaRepository<MatchSnapshot, UUID> {
+
+    // No filters
     Page<MatchSnapshot> findByTrackedPlayerIdOrderByPlayedAtDesc(UUID trackedPlayerId, Pageable pageable);
 
+    // Win/Loss filter only
+    Page<MatchSnapshot> findByTrackedPlayerIdAndWinOrderByPlayedAtDesc(UUID trackedPlayerId, boolean win, Pageable pageable);
+
+    // Champion search only
     @Query("SELECT m FROM MatchSnapshot m WHERE m.trackedPlayer.id = :playerId AND LOWER(m.championName) LIKE LOWER(CONCAT('%', :search, '%')) ORDER BY m.playedAt DESC")
     Page<MatchSnapshot> searchByChampion(@Param("playerId") UUID playerId, @Param("search") String search, Pageable pageable);
 
+    // Champion search + win/loss filter
     @Query("SELECT m FROM MatchSnapshot m WHERE m.trackedPlayer.id = :playerId " +
-            "AND (:search IS NULL OR LOWER(m.championName) LIKE LOWER(CONCAT('%', :search, '%'))) " +
-            "AND (:win IS NULL OR m.win = :win) " +
+            "AND LOWER(m.championName) LIKE LOWER(CONCAT('%', :search, '%')) " +
+            "AND m.win = :win " +
             "ORDER BY m.playedAt DESC")
-    Page<MatchSnapshot> findWithFilters(@Param("playerId") UUID playerId,
-                                        @Param("search") String search,
-                                        @Param("win") Boolean win,
-                                        Pageable pageable);
+    Page<MatchSnapshot> searchByChampionAndWin(@Param("playerId") UUID playerId,
+                                               @Param("search") String search,
+                                               @Param("win") boolean win,
+                                               Pageable pageable);
 
     boolean existsByTrackedPlayerIdAndRiotMatchId(UUID trackedPlayerId, String riotMatchId);
 }
-

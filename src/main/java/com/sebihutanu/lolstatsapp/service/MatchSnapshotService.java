@@ -55,15 +55,23 @@ public class MatchSnapshotService {
         if ("WIN".equalsIgnoreCase(result)) win = true;
         else if ("LOSS".equalsIgnoreCase(result)) win = false;
 
-        // Use the combined filter only when at least one filter is active
-        if (hasSearch || win != null) {
-            return matchSnapshotRepository.findWithFilters(playerId, hasSearch ? search : null, win, pageable)
+        if (hasSearch && win != null) {
+            // Both champion search and win/loss filter
+            return matchSnapshotRepository.searchByChampionAndWin(playerId, search, win, pageable)
+                    .map(this::mapToResponse);
+        } else if (hasSearch) {
+            // Champion search only
+            return matchSnapshotRepository.searchByChampion(playerId, search, pageable)
+                    .map(this::mapToResponse);
+        } else if (win != null) {
+            // Win/loss filter only
+            return matchSnapshotRepository.findByTrackedPlayerIdAndWinOrderByPlayedAtDesc(playerId, win, pageable)
+                    .map(this::mapToResponse);
+        } else {
+            // No filters
+            return matchSnapshotRepository.findByTrackedPlayerIdOrderByPlayedAtDesc(playerId, pageable)
                     .map(this::mapToResponse);
         }
-
-        // No filters — use the simple, proven query
-        return matchSnapshotRepository.findByTrackedPlayerIdOrderByPlayedAtDesc(playerId, pageable)
-                .map(this::mapToResponse);
     }
 
     public void delete(UUID matchId) {

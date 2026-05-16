@@ -23,6 +23,7 @@ import {
 } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { api } from '../../api/api';
+import { usePageTitle } from '../../hooks/usePageTitle';
 
 interface WatchlistPlayer {
   id: string;
@@ -53,6 +54,7 @@ interface PageResponse {
 const DDRAGON = 'https://ddragon.leagueoflegends.com/cdn/14.24.1';
 
 export const MatchesPage = () => {
+  usePageTitle('Match History');
   const [watchlist, setWatchlist] = useState<WatchlistPlayer[]>([]);
   const [watchlistLoading, setWatchlistLoading] = useState(true);
 

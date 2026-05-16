@@ -25,6 +25,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { api } from '../../api/api';
+import { usePageTitle } from '../../hooks/usePageTitle';
 import { ConfirmDeleteDialog } from '../../components/ConfirmDeleteDialog';
 import { AddToWatchlistDialog } from './AddToWatchlistDialog';
 import { EditNoteDialog } from './EditNoteDialog';
@@ -55,6 +56,7 @@ interface PageResponse {
 }
 
 export const WatchlistPage = () => {
+  usePageTitle('My Watchlist');
   const navigate = useNavigate();
   const [data, setData] = useState<PageResponse | null>(null);
   const [loading, setLoading] = useState(false);

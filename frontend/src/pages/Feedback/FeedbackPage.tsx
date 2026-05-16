@@ -22,6 +22,7 @@ import {
 } from '@mui/material';
 import { useState } from 'react';
 import { api } from '../../api/api';
+import { usePageTitle } from '../../hooks/usePageTitle';
 
 const CATEGORIES = ['Bug', 'Feature Request', 'General'];
 
@@ -54,6 +55,7 @@ const defaultForm: FormState = {
 };
 
 export const FeedbackPage = () => {
+  usePageTitle('Feedback');
   const [form, setForm] = useState<FormState>(defaultForm);
   const [errors, setErrors] = useState<FormErrors>({});
   const [submitting, setSubmitting] = useState(false);

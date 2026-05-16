@@ -30,6 +30,7 @@ import {
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { api } from '../../api/api';
+import { usePageTitle } from '../../hooks/usePageTitle';
 
 const REGIONS = ['euw1', 'eun1', 'na1', 'kr', 'br1', 'la1', 'la2', 'oc1', 'tr1', 'ru', 'jp1'];
 
@@ -53,6 +54,7 @@ interface PageResponse {
 }
 
 export const PlayersPage = () => {
+  usePageTitle('Players');
   const navigate = useNavigate();
   const [data, setData] = useState<PageResponse | null>(null);
   const [loading, setLoading] = useState(false);

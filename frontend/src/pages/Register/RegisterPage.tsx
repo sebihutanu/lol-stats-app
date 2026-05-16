@@ -6,6 +6,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import * as yup from 'yup';
 import { api } from '../../api/api';
 import { saveAuth } from '../../hooks/useAuth';
+import { usePageTitle } from '../../hooks/usePageTitle';
 
 type RegisterForm = {
   name: string;
@@ -25,6 +26,7 @@ const schema = yup.object({
 });
 
 export const RegisterPage = () => {
+  usePageTitle('Register');
   const navigate = useNavigate();
   const [apiError, setApiError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);

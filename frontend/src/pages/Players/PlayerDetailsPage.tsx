@@ -22,6 +22,7 @@ import {
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { api } from '../../api/api';
+import { usePageTitle } from '../../hooks/usePageTitle';
 
 interface TrackedPlayer {
   id: string;
@@ -70,6 +71,8 @@ export const PlayerDetailsPage = () => {
   const [player, setPlayer] = useState<TrackedPlayer | null>(null);
   const [playerLoading, setPlayerLoading] = useState(true);
   const [playerError, setPlayerError] = useState<string | null>(null);
+
+  usePageTitle(player ? `${player.gameName}#${player.tagLine}` : 'Player Details');
 
   const [matches, setMatches] = useState<PageResponse | null>(null);
   const [matchPage, setMatchPage] = useState(0);
